@@ -5,6 +5,8 @@ Creating database tables:
 - Variacao
 """
 from django.db import models
+from django.db.models.fields import SlugField
+from django.utils.text import slugify
 
 
 class Produto(models.Model):
@@ -30,6 +32,14 @@ class Produto(models.Model):
     # Setting admin area name
     def __str__(self):
         return self.nome
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        # making the slugfield into a proper slug with a pk
+        if not self.slug:
+            self.slug = slugify(f'{self.nome} + {str(self.id)}')
+            self.save()
 
     
 class Variacao(models.Model):
