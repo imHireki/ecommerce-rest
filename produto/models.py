@@ -12,6 +12,7 @@ from django.conf.global_settings import MEDIA_ROOT
 
 
 class Produto(models.Model):
+    """ Produto database table """
     nome = models.CharField(max_length=255)
     descricao_curta = models.TextField(max_length=255)
     descricao_longa = models.TextField()
@@ -31,17 +32,18 @@ class Produto(models.Model):
         ),
     )
 
-    # Setting admin area name
     def __str__(self):
+        """ Setting produto objects name in admin area """
         return self.nome
 
     @staticmethod
-    def resize_image(img, new_width=int):
+    def resize_save_image(img, new_width=int):
+        """ Resize and save sent images """
         img_fp = img.path
         img_pil = Image.open(img_fp)
         (original_width, original_height) = img_pil.size
         
-        # Just resize if width > 800
+        # Just resize if original width > new_width 
         if not original_width > new_width:
             return
         
@@ -54,10 +56,11 @@ class Produto(models.Model):
 
     def save(self, *args, **kwargs):        
         super().save(*args, **kwargs)
-            
+        
+        # Resizing image
         if self.imagem:
             new_width = 800
-            self.resize_image(self.imagem, new_width)
+            self.resize_save_image(self.imagem, new_width)
 
         # Making the slugfield into a proper slug with a pk
         if not self.slug:
@@ -66,6 +69,7 @@ class Produto(models.Model):
 
     
 class Variacao(models.Model):
+    """ Variacao database table """
     # Many (Variação) To One (Produto)
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
     nome = models.CharField(max_length=255, blank=True, null=True)
@@ -76,8 +80,10 @@ class Variacao(models.Model):
     
     # Setting and fixing admin area's names
     def __str__(self):
+        """ Setting and fixing produto objects name in admin area """
         return self.nome or self.produto.nome
 
     class Meta:
+        """ Adjusting table names in admin area"""
         verbose_name = 'Variação'
         verbose_name_plural = 'Variações'
