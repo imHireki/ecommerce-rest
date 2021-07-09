@@ -7,6 +7,8 @@ Creating database tables:
 from django.db import models
 from django.db.models.fields import SlugField
 from django.utils.text import slugify
+from PIL import Image
+from django.conf.global_settings import MEDIA_ROOT
 
 
 class Produto(models.Model):
@@ -33,10 +35,31 @@ class Produto(models.Model):
     def __str__(self):
         return self.nome
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+    @staticmethod
+    def resize_image(img, new_width=int):
+        img_fp = img.path
+        img_pil = Image.open(img_fp)
+        (original_width, original_height) = img_pil.size
+        
+        # Just resize if width > 800
+        if not original_width > new_width:
+            return
+        
+        # Figuring out new height
+        new_height = round((new_width * original_height) / original_width)
 
-        # making the slugfield into a proper slug with a pk
+        # Resizing with new values and a resample
+        resized = img_pil.resize((new_width, new_height), Image.LANCZOS)
+        resized.save(img_fp)
+
+    def save(self, *args, **kwargs):        
+        super().save(*args, **kwargs)
+            
+        if self.imagem:
+            new_width = 800
+            self.resize_image(self.imagem, new_width)
+
+        # Making the slugfield into a proper slug with a pk
         if not self.slug:
             self.slug = slugify(f'{self.nome} + {str(self.id)}')
             self.save()

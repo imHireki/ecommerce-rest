@@ -17,7 +17,8 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 from produto.views import ProdutoViewSet
-
+from django.conf import settings
+from django.conf.urls.static import static
 
 router = routers.DefaultRouter()
 router.register(r'produtos', ProdutoViewSet)
@@ -28,4 +29,4 @@ urlpatterns = [
     # Rest
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls'))
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
