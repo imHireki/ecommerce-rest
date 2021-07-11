@@ -53,21 +53,21 @@ class Produto(models.Model):
         # Resizing with new values and a resample
         resized = img_pil.resize((new_width, new_height), Image.LANCZOS)
         resized.save(img_fp)
+    
+    def save(self, *args, **kwargs):
+        # Making the slugfield into a proper slug with a pk
+        if not self.slug:
+            self.slug = slugify(self.nome)
+            self.save()
 
-    def save(self, *args, **kwargs):        
         super().save(*args, **kwargs)
-        
-        # Resizing image
-        if self.imagem:
+
+        if self.imagem: # Resizing image
             new_width = 800
             self.resize_save_image(self.imagem, new_width)
 
-        # Making the slugfield into a proper slug with a pk
-        if not self.slug:
-            self.slug = slugify(f'{self.nome} + {str(self.id)}')
-            self.save()
 
-    
+
 class Variacao(models.Model):
     """ Variacao database table """
     # Many (Variação) To One (Produto)
