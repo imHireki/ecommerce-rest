@@ -5,7 +5,6 @@ Creating database tables:
 - Variacao
 """
 from django.db import models
-from django.db.models.fields import SlugField
 from django.utils.text import slugify
 from PIL import Image
 from django.conf.global_settings import MEDIA_ROOT
@@ -55,7 +54,6 @@ class Produto(models.Model):
         resized.save(img_fp)
     
     def save(self, *args, **kwargs):
-        # Making the slugfield into a proper slug with a pk
         if not self.slug:
             self.slug = slugify(self.nome)
             self.save()
@@ -65,7 +63,6 @@ class Produto(models.Model):
         if self.imagem: # Resizing image
             new_width = 800
             self.resize_save_image(self.imagem, new_width)
-
 
 
 class Variacao(models.Model):

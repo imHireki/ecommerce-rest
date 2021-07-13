@@ -1,7 +1,5 @@
 base_de_dados.txt
-.kanbn
-mysql.cnf
-db
+docker
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
