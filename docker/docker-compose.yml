@@ -1,0 +1,34 @@
+version: "3.9"
+   
+services:
+  db:
+    image: mysql
+    ports:
+      - 3306:3306
+    volumes:
+      - ./db:/var/lib/mysql
+    command:
+      - --default-authentication-plugin=mysql_native_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --innodb_force_recovery=0
+    environment:
+      MYSQL_DATABASE: db
+      MYSQL_ROOT_PASSWORD: admindb
+      MYSQL_USER: userdb
+      MYSQL_PASSWORD: passworddb
+      TZ: America/Sao_Paulo
+  web:
+    # Config based on subfolder docker
+    build: 
+      # Sets out the BASEDIR
+      context: ../
+      # Dockerfile based on BASEDIR
+      dockerfile: ./docker/Dockerfile
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ../:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
