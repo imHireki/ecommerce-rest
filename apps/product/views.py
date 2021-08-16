@@ -6,7 +6,7 @@ from .models import Product
 
 
 class Products(APIView):
-    def get(self, args_kwargs):
+    def get(self, *args, **kwargs):
         products = Product.objects.all()
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data)
