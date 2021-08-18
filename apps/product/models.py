@@ -1,11 +1,11 @@
 from django.db import models
 from utils.product import auto_slug
+from PIL import Image as Img
 
 
 """ TODO: ADD A CATEGORY MODEL """
 
 CASCADE = models.CASCADE
-
 
 class Product(models.Model):
     PRODUCT_TYPES = (
@@ -19,11 +19,6 @@ class Product(models.Model):
     price = models.FloatField()
     price_off = models.FloatField(default=0)
     inventory = models.PositiveIntegerField(default=0)
-    thumbnail = models.ImageField(
-        upload_to="uploads/thumbnails/%Y/%m/",
-        null=True,
-        blank=True,
-    )
     
     def __str__(self):
         return self.name
@@ -35,7 +30,7 @@ class Product(models.Model):
         if not self.slug:
             self.slug = auto_slug(self.pk, self.name)
             self.save()
-    
+
 
 class Image(models.Model):
     """ Many images for one product """
@@ -43,8 +38,22 @@ class Image(models.Model):
         to=Product,
         on_delete=CASCADE
     )
-    image = models.ImageField(
+    image = models.FileField(
         upload_to="uploads/images/%Y/%m/",
         blank=True,
         null=True,
     )
+
+    def save(self, *args, **kwargs):
+        # TODO: Call resize image
+        super().save(*args, **kwargs)
+
+    @staticmethod
+    def resize_image(img, product):
+        image = Image.objects.filter(
+            product__name=product
+        ).first()
+
+        if image:
+            ...
+        ...
