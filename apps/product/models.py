@@ -44,10 +44,6 @@ class Image(models.Model):
         null=True,
     )
 
-    def save(self, *args, **kwargs):
-        # TODO: Call resize image
-        super().save(*args, **kwargs)
-
     @staticmethod
     def resize_image(img, product):
         image = Image.objects.filter(
