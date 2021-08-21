@@ -6,7 +6,8 @@ from django.conf import settings
 
 from io import BytesIO
 from sys import stdout
-from PIL import Image as Img, ImageOps, ImageFilter
+import os
+from PIL import Image as Img, ImageOps
 
 
 class ProductTestCase(TestCase):
@@ -51,14 +52,16 @@ class ProductTestCase(TestCase):
             product__name=self.product
         ).count()
 
-        image_fp = str(settings.MEDIA_ROOT) + self.image_obj.image.name
-        img_pil = Img.open(image_fp)
+        img_fp = os.path.join(
+            settings.MEDIA_ROOT, self.image_obj.image.name
+        )
+        img_pil = Img.open(img_fp)
 
+        """ If it's the product's first image, it makes and saves an
+            squared thumbnail. Also saves that image """ 
         if len_product_img > 1:
             new_sizes = (228, 228)
             ANTIALIAS = Img.ANTIALIAS
-
-            img_pil = Img.open(image_fp)
 
             # TODO: add blur mirrored padding/border
             pad_img = ImageOps.pad(
@@ -67,6 +70,6 @@ class ProductTestCase(TestCase):
                 method=ANTIALIAS,
                 color='white'
             )
-            pad_img.save(image_fp)
+            pad_img.save(img_fp)
             return
         
