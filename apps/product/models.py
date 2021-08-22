@@ -36,7 +36,7 @@ class Product(models.Model):
         if not self.slug:
             self.slug = auto_slug(self.pk, self.name)
             self.save()
-
+            
 
 class ProductImage(models.Model):
     """ Many images for one product """
@@ -56,41 +56,49 @@ class ProductImage(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        # if self.image:
-            # self.test_resizing_img_pillow()
+        if self.image:
+            self.resize_img()
 
-    # def test_resizing_img_pillow(self):
-    #     len_product_img = ProductImage.objects.filter(
-    #         product__name=self.product
-    #     ).count()
+    def resize_img(self):
+        img_name = self.image.name
+        img_fp = os.path.join(settings.MEDIA_ROOT, img_name)
 
-    #     img_fp = os.path.join(settings.MEDIA_ROOT, self.image.name)
-        
-    #     if len_product_img == 1:
-    #         img_pil = Image.open(img_fp)
+        len_product_img = ProductImage.objects.filter(
+            product__name=self.product
+        ).count()
 
-    #         img_pil.save(img_fp)
+        if len_product_img == 1:
+            NEW_SIZES = (228, 228)
+            ANTIALIAS = Image.ANTIALIAS
 
-    #         # CREATING AND SAVING THUMBNAIL FILE
-    #         NEW_SIZES = (228, 228)
-    #         ANTIALIAS = Image.ANTIALIAS
+            with Image.open(img_fp) as img_pil:
+                # Don't create a thumbnail if it already exists
+                product = Product.objects.filter(
+                    name=self.product
+                ).first()
 
-    #         thumbnail = img_pil.copy()
-    #         thumbnail = ImageOps.pad(
-    #             image=thumbnail, size=NEW_SIZES,
-    #             method=ANTIALIAS, color='white'
-    #         )
+                if product.thumbnail:
+                    print('thumbnail exists!')
+                    return img_pil
 
-    #         img_pil_name = Path(self.image.name).stem
-    #         thumb_pil_name = f'{img_pil_name}-thumbnail.png'
+                # Managing names
+                img_pil_name = Path(img_name).stem
+                thumb_pil_name = f'{img_pil_name}_thumbnail.png'
 
-    #         thumb_io = BytesIO()
-    #         thumbnail.save(thumb_io, format='png', quality=85)
-    #         thumbnail = File(thumb_io, name=thumb_pil_name)
+                # Thumbnail file's modifications 
+                thumbnail = img_pil.copy()
+                thumbnail = ImageOps.pad(
+                    image=thumbnail, size=NEW_SIZES,
+                    method=ANTIALIAS, color='white'
+                )
+                thumbnail_io = BytesIO()
+                thumbnail.save(thumbnail_io, 'png')
+                thumbnail_file = File(
+                    thumbnail_io, name=thumb_pil_name
+                )
+                
+                # Saving thumbnail to Product
+                product.thumbnail = thumbnail_file
+                product.save()
 
-    #         # ADDING THE THUMBNIAL TO THE PRODUCT
-    #         product = Product.objects.filter(name=self.product).first()
-    #         product.thumbnail = thumbnail
-    #         product.save()
-
-    #     return img_pil # retorno a original para o ProductImage
+        return img_pil

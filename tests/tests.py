@@ -1,7 +1,6 @@
 from apps.product.models import Product, ProductImage
 
-from django.core.files.images import ImageFile
-from django.core.files import File
+from django.core.files.images import ImageFile, File
 from django.test import TestCase
 from django.conf import settings
 
@@ -14,12 +13,12 @@ import os
 
 class ProductTestCase(TestCase):
     def setUp(self):
+        img = self.create_test_image()
         self.product = Product.objects.create(
             name='test',
             price=15,
+            # thumbnail=img
         )
-
-        img = self.create_test_image()
         self.image_obj = ProductImage.objects.create(
             product=self.product,
             image=img
@@ -51,24 +50,32 @@ class ProductTestCase(TestCase):
             NEW_SIZES = (228, 228)
             ANTIALIAS = Image.ANTIALIAS
 
-            with Image.open(img_fp) as img_pil:  
-                thumbnail = img_pil.copy()
+            with Image.open(img_fp) as img_pil:                
+                # Don't create a thumbnail if it already exists
+                product = Product.objects.filter(
+                    name=self.product
+                ).first()
+                if product.thumbnail:
+                    stdout.write('THUMBNAIL EXISTS!')
+                    return img_pil
 
                 # Managing names
                 img_pil_name = Path(img_name).stem
                 thumb_pil_name = f'{img_pil_name}_thumbnail.png'
 
                 # Thumbnail file's modifications 
+                thumbnail = img_pil.copy()
                 thumbnail = ImageOps.pad(
                     image=thumbnail, size=NEW_SIZES,
                     method=ANTIALIAS, color='white'
                 )
                 thumbnail_io = BytesIO()
                 thumbnail.save(thumbnail_io, 'png')
-                thumbnail_file = File(thumbnail_io, name=thumb_pil_name)
-
+                thumbnail_file = File(
+                    thumbnail_io, name=thumb_pil_name
+                )
+                
                 # Saving thumbnail to Product
-                product = Product.objects.filter(name=self.product).first()
                 product.thumbnail = thumbnail_file
                 product.save()
 
