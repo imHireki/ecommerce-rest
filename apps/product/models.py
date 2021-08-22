@@ -56,41 +56,41 @@ class ProductImage(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        if self.image:
-            self.test_resizing_img_pillow()
+        # if self.image:
+            # self.test_resizing_img_pillow()
 
-    def test_resizing_img_pillow(self):
-        len_product_img = ProductImage.objects.filter(
-            product__name=self.product
-        ).count()
+    # def test_resizing_img_pillow(self):
+    #     len_product_img = ProductImage.objects.filter(
+    #         product__name=self.product
+    #     ).count()
 
-        img_fp = os.path.join(settings.MEDIA_ROOT, self.image.name)
+    #     img_fp = os.path.join(settings.MEDIA_ROOT, self.image.name)
         
-        if len_product_img == 1:
-            img_pil = Image.open(img_fp)
-            img_pil.save(img_fp)
+    #     if len_product_img == 1:
+    #         img_pil = Image.open(img_fp)
 
-            # CREATING AND SAVING THUMBNAIL FILE
-            NEW_SIZES = (228, 228)
-            ANTIALIAS = Image.ANTIALIAS
+    #         img_pil.save(img_fp)
 
-            thumbnail = img_pil.copy() # Crio uma cópia da original
+    #         # CREATING AND SAVING THUMBNAIL FILE
+    #         NEW_SIZES = (228, 228)
+    #         ANTIALIAS = Image.ANTIALIAS
 
-            thumbnail = ImageOps.pad(
-                image=thumbnail, size=NEW_SIZES,
-                method=ANTIALIAS, color='white'
-            )
+    #         thumbnail = img_pil.copy()
+    #         thumbnail = ImageOps.pad(
+    #             image=thumbnail, size=NEW_SIZES,
+    #             method=ANTIALIAS, color='white'
+    #         )
 
-            img_pil_name = Path(self.image.name).stem
-            thumb_pil_name = f'{img_pil_name}-thumbnail.jpeg'
+    #         img_pil_name = Path(self.image.name).stem
+    #         thumb_pil_name = f'{img_pil_name}-thumbnail.png'
 
-            thumb_io = BytesIO()
-            thumbnail.save(thumb_io, format='JPEG', quality=85)
-            thumbnail = File(thumb_io, name=thumb_pil_name)
+    #         thumb_io = BytesIO()
+    #         thumbnail.save(thumb_io, format='png', quality=85)
+    #         thumbnail = File(thumb_io, name=thumb_pil_name)
 
-            # ADDING THE THUMBNIAL TO THE PRODUCT
-            product = Product.objects.filter(name=self.product).first()
-            product.thumbnail = thumbnail
-            product.save()
+    #         # ADDING THE THUMBNIAL TO THE PRODUCT
+    #         product = Product.objects.filter(name=self.product).first()
+    #         product.thumbnail = thumbnail
+    #         product.save()
 
-        return img_pil # retorno a original para o ProductImage
+    #     return img_pil # retorno a original para o ProductImage
