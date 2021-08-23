@@ -10,21 +10,23 @@ from apps.product import models
 
 
 def resize(image, product):
-    """ It takes care of calling the class instance's function """
     resize = ResizeImagePIL(image, product)
     resize.resize_image_thumbnail()
-    return resize
+
+def resize_thumb(thumbnail):
+    resize = ResizeImagePIL(thumbnail)
+    resize.resize_thumbnail(just_thumbnail=True)
 
 class ResizeImagePIL:
-    def __init__(self, image, product):
+    def __init__(self, image, product=None):
         self.image = image
         self.product = product
 
-    def resize_image_thumbnail(self):
-        """ Handles the time of calling each function """
         self.image_name = self.image.name
         self.img_fp = os.path.join(settings.MEDIA_ROOT, self.image.name)
 
+    def resize_image_thumbnail(self):
+        """ Handles the time of calling each function """
         len_product_img = models.ProductImage.objects.filter(
             product__name=self.product
         ).count()
@@ -50,30 +52,32 @@ class ResizeImagePIL:
             resized_img_pil.save(fp=self.img_fp, optimize=True)
             return
 
-    def resize_thumbnail(self):
+    def resize_thumbnail(self, just_thumbnail=False):
         """ Creates and resizes the thumbnail based on the `self.image` """
         NEW_THUMBNAIL_SIZE = (228, 228)
         ANTIALIAS = Image.ANTIALIAS
 
         with Image.open(self.img_fp) as img_pil:
-            if self.product.thumbnail:
-                return img_pil
-            
-            # Managing names
-            img_pil_name = Path(self.image_name)
-            thumb_pil_name = f'{img_pil_name}_thumbnail.png'
-            
-            # Thumbnail file's modifications 
-            thumbnail = img_pil.copy()
-            thumbnail = ImageOps.pad(
+            if just_thumbnail is False:
+                if self.product.thumbnail:
+                    return img_pil
+                thumbnail = img_pil.copy()
+            else:
+                thumbnail = img_pil
+
+            # Thumbnail file's modifications
+            pad_thumbnail = ImageOps.pad(
                 image=thumbnail, size=NEW_THUMBNAIL_SIZE,
                 method=ANTIALIAS, color='white',
             )
+
+            if just_thumbnail is True:
+                pad_thumbnail.save(self.img_fp, 'png', optimize=True)
+                return
+            
             thumbnail_io = BytesIO()
-            thumbnail.save(thumbnail_io, 'png', optimize=True)
-            thumbnail_file = File(
-                thumbnail_io, name=thumb_pil_name
-            )
+            pad_thumbnail.save(thumbnail_io, 'png', optimize=True)
+            thumbnail_file = File(thumbnail_io)
 
             # Saving thumbnail to Product
             self.product.thumbnail = thumbnail_file

@@ -1,6 +1,6 @@
 from django.db import models
 from utils.product import auto_slug
-from utils.product_image import resize
+from utils.product_image import resize, resize_thumb
 
 
 class Product(models.Model):
@@ -25,6 +25,9 @@ class Product(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
+        if self.thumbnail:
+            resize_thumb(self.thumbnail)
+        
         # Placed after first save to get self.id
         if not self.slug:
             self.slug = auto_slug(self.pk, self.name)
