@@ -1,6 +1,6 @@
-from django.db import models
-from utils.product import auto_slug
 from utils.product_image import resize, resize_thumb
+from utils.product import auto_slug
+from django.db import models
 
 
 class Product(models.Model):
@@ -32,7 +32,8 @@ class Product(models.Model):
         if not self.slug:
             self.slug = auto_slug(self.pk, self.name)
             self.save()
-            
+
+
 class ProductImage(models.Model):
     """ Many images for one product """
     CASCADE = models.CASCADE

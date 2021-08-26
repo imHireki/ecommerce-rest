@@ -2,7 +2,6 @@ from django.core.files.images import File
 from django.conf import settings
 
 from PIL import Image, ImageOps
-from pathlib import Path
 from io import BytesIO
 import os
 
@@ -10,10 +9,12 @@ from apps.product import models
 
 
 def resize(image, product):
+    """ Shortcut to resize image and create a thumbnail based on it """
     resize = ResizeImagePIL(image, product)
     resize.resize_image_thumbnail()
 
 def resize_thumb(thumbnail):
+    """ Shortcute to resize only the thumbnail """
     resize = ResizeImagePIL(thumbnail)
     resize.resize_thumbnail(just_thumbnail=True)
 
