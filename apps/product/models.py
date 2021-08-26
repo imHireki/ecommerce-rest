@@ -1,3 +1,7 @@
+"""
+Product and ProductImage models
+"""
+
 from utils.product_image import resize, resize_thumb
 from utils.product import auto_slug
 from django.db import models
@@ -48,7 +52,6 @@ class ProductImage(models.Model):
     )
 
     def __str__(self):
-        # TODO: FIX STR
         return f'image from product {self.product}'
 
     def save(self, *args, **kwargs):
