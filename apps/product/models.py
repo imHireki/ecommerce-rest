@@ -2,7 +2,7 @@
 Product and ProductImage models
 """
 
-from utils.product_image import resize, resize_thumb
+from utils.product_image import resize_thumbnail
 from utils.product import auto_slug
 from django.db import models
 
@@ -20,7 +20,8 @@ class Product(models.Model):
     price_off = models.FloatField(default=0)
     inventory = models.PositiveIntegerField(default=0)
     thumbnail = models.ImageField(
-        upload_to='uploads/thumbnails/%Y/%m/', blank=True, null=True,
+        upload_to='uploads/thumbnails/%Y/%m/',
+        blank=True, null=True,
     )
 
     def __str__(self):
@@ -28,13 +29,17 @@ class Product(models.Model):
     
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
+        needs_resave = False
 
-        if self.thumbnail:
-            resize_thumb(self.thumbnail)
-        
-        # Placed after first save to get self.id
+        if self.thumbnail and self.thumbnail.width != 228:
+            self.thumbnail = resize_thumbnail(self.thumbnail)
+            needs_resave = True
+
         if not self.slug:
             self.slug = auto_slug(self.pk, self.name)
+            needs_resave = True
+        
+        if needs_resave:
             self.save()
 
 
@@ -56,5 +61,5 @@ class ProductImage(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        if self.image:
-            resize(self.image, self.product)
+        # if self.image:
+        #     resize(self.image, self.product)
