@@ -39,7 +39,8 @@ class ProductImage(models.Model):
 
     product = models.ForeignKey(
         to=Product,
-        on_delete=CASCADE
+        on_delete=CASCADE,
+        related_name='images',
     )
     image = models.FileField(
         upload_to="uploads/images/%Y/%m/",
@@ -47,7 +48,7 @@ class ProductImage(models.Model):
 
     def __str__(self):
         # TODO: FIX STR
-        return f'image {self.pk} from {self.product}'
+        return f'image from product {self.product}'
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
