@@ -31,10 +31,10 @@ class ProductTestCase(TestCase):
         
     @staticmethod
     def create_test_image():
-        img_name = 'gon.jpg'
+        img_name = 'py.png'
         with Image.open(f'media/{img_name}') as image:
             img_io = BytesIO()
-            image.save(img_io, format='jpeg')
+            image.save(img_io, format='png')
             image_file = ImageFile(img_io, name=img_name)
         return image_file
 
@@ -45,5 +45,18 @@ class ProductTestCase(TestCase):
         thumb_size = (thumb.width, thumb.height)
         thumb_ext = os.path.splitext(thumb.name)[1]
 
-        self.assertEqual(thumb_size[0], 228)
+        self.assertEqual(thumb_size[0], 256)
+        self.assertEqual(thumb_ext, '.jpg')
+    
+
+    def test_resize_image(self):
+        image = ProductImage.objects.get(
+            product__name=self.product
+        ).image
+
+        print(image.__dict__)
+        thumb_size = (image.width, image.height)
+        thumb_ext = os.path.splitext(image.name)[1]
+
+        self.assertEqual(thumb_size[0], 800)
         self.assertEqual(thumb_ext, '.png')

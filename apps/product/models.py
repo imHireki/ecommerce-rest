@@ -2,7 +2,9 @@
 Product and ProductImage models
 """
 
-from utils.product_image import resize_thumbnail
+from utils.product_image import (
+    resize_image, resize_jpg, resize_png
+)
 from utils.product import auto_slug
 from django.db import models
 
@@ -31,8 +33,8 @@ class Product(models.Model):
         super().save(*args, **kwargs)
         needs_resave = False
 
-        if self.thumbnail and self.thumbnail.width != 228:
-            self.thumbnail = resize_thumbnail(self.thumbnail)
+        if self.thumbnail and self.thumbnail.width > 256:
+            self.thumbnail = resize_png(self.thumbnail)
             needs_resave = True
 
         if not self.slug:
@@ -52,7 +54,7 @@ class ProductImage(models.Model):
         on_delete=CASCADE,
         related_name='images',
     )
-    image = models.FileField(
+    image = models.ImageField(
         upload_to="uploads/images/%Y/%m/",
     )
 
@@ -61,5 +63,8 @@ class ProductImage(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        # if self.image:
-        #     resize(self.image, self.product)
+
+        if self.image and self.image.width !=  800:
+            self.image = resize_image(self.image)
+            self.save()
+
