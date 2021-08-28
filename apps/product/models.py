@@ -3,7 +3,7 @@ Product and ProductImage models
 """
 
 from utils.product_image import (
-    resize_image, resize_jpg, resize_png
+    resize_jpg, resize_png, resize_small_jpg, resize_small_png
 )
 from utils.product import auto_slug
 from django.db import models
@@ -33,8 +33,8 @@ class Product(models.Model):
         super().save(*args, **kwargs)
         needs_resave = False
 
-        if self.thumbnail and self.thumbnail.width > 256:
-            self.thumbnail = resize_png(self.thumbnail)
+        if self.thumbnail and self.thumbnail.width == 238:
+            self.thumbnail = resize_small_jpg(self.thumbnail)
             needs_resave = True
 
         if not self.slug:
@@ -64,7 +64,7 @@ class ProductImage(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
-        if self.image and self.image.width !=  800:
-            self.image = resize_image(self.image)
-            self.save()
+        # if self.image and self.image.width !=  800:
+        #     self.image = resize_image(self.image)
+        #     self.save()
 
