@@ -2,8 +2,10 @@
 Product and ProductImage models
 """
 
+from django.core.files.images import ImageFile
 from utils.product_image import (
-    resize_jpg, resize_png, resize_small_jpg, resize_small_png
+    manage_resize, resize_image ,resize_jpg, resize_png,
+    resize_small_jpg, resize_small_png
 )
 from utils.product import auto_slug
 from django.db import models
@@ -33,8 +35,8 @@ class Product(models.Model):
         super().save(*args, **kwargs)
         needs_resave = False
 
-        if self.thumbnail and self.thumbnail.width == 238:
-            self.thumbnail = resize_small_jpg(self.thumbnail)
+        if self.thumbnail and '_Cmprssd' not in self.thumbnail.name:
+            self.thumbnail = manage_resize(self.thumbnail)
             needs_resave = True
 
         if not self.slug:
@@ -67,4 +69,3 @@ class ProductImage(models.Model):
         # if self.image and self.image.width !=  800:
         #     self.image = resize_image(self.image)
         #     self.save()
-

@@ -31,10 +31,10 @@ class ProductTestCase(TestCase):
         
     @staticmethod
     def create_test_image():
-        img_name = 'animegirl250.jpg'
+        img_name = 'animegirl250.png'
         with Image.open(f'media/{img_name}') as image:
             img_io = BytesIO()
-            image.save(img_io, format='jpeg')
+            image.save(img_io, format='png')
             image_file = ImageFile(img_io, name=img_name)
         return image_file
 
@@ -44,7 +44,9 @@ class ProductTestCase(TestCase):
 
         thumb_size = (thumb.width, thumb.height)
         thumb_ext = os.path.splitext(thumb.name)[1]
-        
+        thumb_name = thumb.name
+
+        self.assertIn('_Cmprssd', thumb_name)
         self.assertLessEqual(thumb_size[0], 256)
         self.assertEqual(thumb_ext, '.jpg')
     
