@@ -1,14 +1,10 @@
 """
 Product and ProductImage models
 """
-
-from django.core.files.images import ImageFile
-from utils.product_image import (
-    manage_resize, resize_image ,resize_jpg, resize_png,
-    resize_small_jpg, resize_small_png
-)
-from utils.product import auto_slug
 from django.db import models
+
+from utils.product_image import ResizeProductImages
+from utils.product import auto_slug
 
 
 class Product(models.Model):
@@ -36,7 +32,11 @@ class Product(models.Model):
         needs_resave = False
 
         if self.thumbnail and '_Cmprssd' not in self.thumbnail.name:
-            self.thumbnail = manage_resize(self.thumbnail)
+            img_c = ResizeProductImages(
+                image=self.thumbnail, size=(256, 256)
+            )
+            img = img_c.setup_resize()
+
             needs_resave = True
 
         if not self.slug:
