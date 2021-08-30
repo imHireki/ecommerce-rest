@@ -31,10 +31,10 @@ class ProductTestCase(TestCase):
         
     @staticmethod
     def create_test_image():
-        img_name = 'luffygif.gif'
+        img_name = 'luffy.jpeg'
         with Image.open(f'media/{img_name}') as image:
             img_io = BytesIO()
-            image.save(img_io, format='gif')
+            image.save(img_io, format='jpeg')
             image_file = ImageFile(img_io, name=img_name)
         return image_file
 

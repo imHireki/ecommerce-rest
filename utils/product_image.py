@@ -5,12 +5,13 @@ from io import BytesIO
 from PIL import Image
 import os
 
+
 LANCZOS = Image.LANCZOS
 
-# def resize(image, size, resample=LANCZOS):
-#     img = ResizeProductImages(image, size, resample)
-#     img.setup_resize()
-#     return img
+def resize(image, size, resample=LANCZOS):
+    resize = ResizeProductImages(image, size, resample)
+    img = resize.setup_resize()
+    return img
 
 class ResizeProductImages:
     def __init__(self, image, size, resample=LANCZOS):
@@ -22,7 +23,7 @@ class ResizeProductImages:
         self.new_image_name = self.get_new_image_name
 
     @property
-    def get_image_fp(self, *args, **kwargs):
+    def get_image_fp(self):
         return os.path.join(settings.MEDIA_ROOT, self.image.name)
 
     @property

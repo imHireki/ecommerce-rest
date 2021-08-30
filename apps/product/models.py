@@ -3,7 +3,7 @@ Product and ProductImage models
 """
 from django.db import models
 
-from utils.product_image import ResizeProductImages
+from utils.product_image import ResizeProductImages, resize
 from utils.product import auto_slug
 
 
@@ -32,11 +32,7 @@ class Product(models.Model):
         needs_resave = False
 
         if self.thumbnail and '_Cmprssd' not in self.thumbnail.name:
-            img_c = ResizeProductImages(
-                image=self.thumbnail, size=(256, 256)
-            )
-            img = img_c.setup_resize()
-
+            self.thumbnail = resize(self.thumbnail, (256, 256))
             needs_resave = True
 
         if not self.slug:
