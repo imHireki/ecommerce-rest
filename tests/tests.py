@@ -20,10 +20,10 @@ class ProductTestCase(TestCase):
             price=15,
             thumbnail=img
         )
-        # self.image_obj = ProductImage.objects.create(
-        #     product=self.product,
-        #     image=img
-        # )
+        self.image_obj = ProductImage.objects.create(
+            product=self.product,
+            image=img
+        )
 
     def test_product_creation(self):
         self.assertIsNotNone(self.product)
@@ -56,9 +56,10 @@ class ProductTestCase(TestCase):
             product__name=self.product
         ).image
 
-        print(image.__dict__)
-        thumb_size = (image.width, image.height)
-        thumb_ext = os.path.splitext(image.name)[1]
+        img_size = (image.width, image.height)
+        img_ext = os.path.splitext(image.name)[1]
+        img_name = image.name
 
-        self.assertEqual(thumb_size[0], 800)
-        self.assertEqual(thumb_ext, '.png')
+        self.assertIn('_Cmprssd', img_name)
+        self.assertLessEqual(img_size[0], 800)
+        self.assertEqual(img_ext, '.jpg')

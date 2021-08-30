@@ -55,9 +55,9 @@ class ResizeProductImages:
             
             img.thumbnail(self.size, self.resample)
 
-            thumb_io = BytesIO()
-            img_file = File(thumb_io, name=self.new_image_name)
-            img.save(thumb_io, format='jpeg', quality=85, optimize=True)
+            img_io = BytesIO()
+            img_file = File(img_io, name=self.new_image_name)
+            img.save(img_io, format='jpeg', quality=50, optimize=True)
 
         os.remove(self.image_fp)
         return img_file

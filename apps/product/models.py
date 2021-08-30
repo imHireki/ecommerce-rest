@@ -3,9 +3,11 @@ Product and ProductImage models
 """
 from django.db import models
 
-from utils.product_image import ResizeProductImages, resize
+from utils.product_image import resize
 from utils.product import auto_slug
 
+
+POS_RESIZE_STR = '_Cmprssd'
 
 class Product(models.Model):
     PRODUCT_TYPES = (
@@ -31,7 +33,7 @@ class Product(models.Model):
         super().save(*args, **kwargs)
         needs_resave = False
 
-        if self.thumbnail and '_Cmprssd' not in self.thumbnail.name:
+        if self.thumbnail and POS_RESIZE_STR not in self.thumbnail.name:
             self.thumbnail = resize(self.thumbnail, (256, 256))
             needs_resave = True
 
@@ -62,6 +64,6 @@ class ProductImage(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
-        # if self.image and self.image.width !=  800:
-        #     self.image = resize_image(self.image)
-        #     self.save()
+        if self.image and POS_RESIZE_STR not in self.image.name:
+            self.image = resize(self.image, (800, 800))
+            self.save()
