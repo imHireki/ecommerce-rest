@@ -1,14 +1,11 @@
-from apps.product.models import Product, ProductImage
-
-from django.core.files.images import ImageFile, File
+from django.core.files.images import ImageFile
 from django.test import TestCase
-from django.conf import settings
 
-from PIL import Image, ImageOps
-from pathlib import Path
+from PIL import Image
 from io import BytesIO
-from sys import stdout
 import os
+
+from apps.product.models import Product, ProductImage
 
 
 class ProductTestCase(TestCase):
@@ -31,10 +28,10 @@ class ProductTestCase(TestCase):
         
     @staticmethod
     def create_test_image():
-        img_name = 'luffy.jpeg'
+        img_name = 'luffygif.gif'
         with Image.open(f'media/{img_name}') as image:
             img_io = BytesIO()
-            image.save(img_io, format='jpeg')
+            image.save(img_io, format='gif')
             image_file = ImageFile(img_io, name=img_name)
         return image_file
 
