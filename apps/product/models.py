@@ -25,9 +25,12 @@ class Product(models.Model):
         blank=True, null=True,
     )
 
+    class Meta:
+        ordering = ['name']
+
     def __str__(self):
         return self.name
-    
+        
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         needs_resave = False
