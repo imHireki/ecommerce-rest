@@ -1,7 +1,7 @@
 """
 App product's useful functions
 """
-from django.core.files.images import File
+from django.core.files.images import ImageFile, File
 from django.utils.text import slugify
 from django.conf import settings
 
@@ -12,16 +12,45 @@ import os
 
 LANCZOS = Image.LANCZOS
 
-def auto_slug(pk:int, name:str):
+def auto_slug(pk:int, name:str) -> str:
     """ Create a slug concatenating `name` and `pk` / `id ` """
     dash_id = f'-{pk}'
     return slugify(name) + dash_id
 
-def resize(image:object, size:tuple):
+def resize(image:object, size:tuple) -> object:
     """ Shortcut to resize images """
     resize = ResizeProductImages(image, size)
     img = resize.setup_resize()
     return img
+
+def save_img(size:tuple, form:str, color='RGB'):
+    """ Manage the image saving """
+    img = Image.new(color, size)
+    img.save(f'media/tests/{size}_{form}_{color}.{form}', form)
+    img.close()
+
+def create_img():
+    """ Manage the creation of the test images """
+    sizes = ((100, 50), (256, 256), (1280, 720))
+    formats = ('png', 'jpeg')
+    colors = ('RGBA', 'RGB')
+
+    for s in range(len(sizes)):
+        for f in range(len(formats)):
+            if formats[f] == 'png':
+                for c in range(len(colors)):
+                    save_img(sizes[s], formats[f], colors[c])
+            else:
+                save_img(sizes[s], formats[f])
+
+def get_img_file(name:str, form:str) -> object:
+    """ Get the files from the testdir when they're requested """
+    with Image.open(f'media/tests/{name}') as image:
+        img_io = BytesIO()
+        image.save(img_io, format=form)
+        image_file = ImageFile(img_io, name=name)
+    return image_file
+
 
 class ResizeProductImages:
     def __init__(self, image:object, size:tuple, resample=LANCZOS):
