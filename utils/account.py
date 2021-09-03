@@ -1,4 +1,8 @@
+"""
+App account's useful functions
+"""
 def get_state_choices():
+    """ Get all Brazil states """
     STATES = (
         ('AC', 'Acre'),
         ('AL', 'Alagoas'),

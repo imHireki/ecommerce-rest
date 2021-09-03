@@ -1,12 +1,13 @@
 """
 Django settings for core project.
 """
-import os
+from utils.core import get_secret
 from pathlib import Path
+import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-q0q74+k7mp#87leivs3=)w$-+fl75p)qphm!^)lea*v4zan@4h'
+SECRET_KEY = get_secret('SECRET_KEY')
 
 DEBUG = True
 
