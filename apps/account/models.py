@@ -5,9 +5,10 @@ from utils.account import get_state_choices
 
 
 class User(AbstractUser):
-    REQUIRED_FIELDS = ['email', 'cpf']
+    REQUIRED_FIELDS = ['email',]
     USERNAME_FIELD = 'username'
 
+    email = models.EmailField(max_length=255, unique=True)
     cpf = models.CharField(max_length=11, null=True)
     birth_date = models.DateField(null=True)
 
@@ -23,13 +24,13 @@ class UserAddress(models.Model):
     CASCADE = models.CASCADE
 
     user = models.ForeignKey(User, on_delete=CASCADE)
-    name = models.CharField(max_length=32)
-    adress = models.CharField(max_length=50)
-    number = models.CharField(max_length=5)
-    complement = models.CharField(max_length=30)
+    name = models.CharField(max_length=16)
+    adress = models.CharField(max_length=64)
+    number = models.CharField(max_length=8)
+    complement = models.CharField(max_length=32)
     zip_code = models.CharField(max_length=8)
-    district = models.CharField(max_length=30)
-    city = models.CharField(max_length=30)
+    district = models.CharField(max_length=32)
+    city = models.CharField(max_length=32)
     state = models.CharField(
         default='SP',
         max_length=2,
