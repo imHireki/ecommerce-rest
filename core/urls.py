@@ -4,8 +4,10 @@ from django.conf import settings
 
 
 urlpatterns = [
-    path('api/v1/', include('apps.product.urls')),
     path('api/v1/', include('rest_framework.urls')),
+
+    path('api/v1/product/', include('apps.product.urls')),
+    path('api/v1/account/', include('apps.account.urls')),
 ]
 
 # Serving MEDIA

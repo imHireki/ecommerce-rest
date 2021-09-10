@@ -5,6 +5,7 @@ from utils.core import get_secret
 from pathlib import Path
 import os
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = get_secret('SECRET_KEY')
@@ -25,11 +26,23 @@ INSTALLED_APPS = [
 
     # Packages
     'rest_framework',
+    'rest_framework.authtoken',
+    'djoser',
     
     # Apps
     'apps.product',
     'apps.account',
 ]
+
+DJOSER = {
+    'USER_CREATE_PASSWORD_RETYPE': True,
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -74,6 +87,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 6,
+        },
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
