@@ -1,3 +1,7 @@
+"""
+URLs mapping for the account management
+provided by Djoser
+"""
 from django.urls import path, include
 
 

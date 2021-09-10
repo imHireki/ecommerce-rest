@@ -1,3 +1,6 @@
+"""
+URLs mapping for the base of the API
+"""
 from django.conf.urls.static import static
 from django.urls import path, include
 from django.conf import settings
@@ -5,7 +8,6 @@ from django.conf import settings
 
 urlpatterns = [
     path('api/v1/', include('rest_framework.urls')),
-
     path('api/v1/product/', include('apps.product.urls')),
     path('api/v1/account/', include('apps.account.urls')),
 ]

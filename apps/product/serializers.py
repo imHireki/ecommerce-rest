@@ -1,5 +1,5 @@
 """
-Serializer's for the product app's models
+Serializers for the product app's models
 
 ProductImageSerializer -> ProductImage
 ProductSerializer      -> Product
