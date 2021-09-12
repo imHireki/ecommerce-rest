@@ -40,18 +40,17 @@ DJOSER = {
         'current_user': 'apps.account.serializers.UserProfileSerializer'
     },
 
+    # Enable the email activation/confirmation
     'SEND_ACTIVATION_EMAIL': True,
     'SEND_CONFIRMATION_EMAIL': True,
 
-    'USERNAME_CHANGED_EMAIL_CONFIRMATION': True,
-    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
+    # # # Email URLs that should redirect to front-end # # #
 
-    # __Email URLs for redirect to front-end__
-    # set is_active to True and allow login
+    # 4 Register. Set is_active to True and allow login
     'ACTIVATION_URL': 'activate/{uid}/{token}',
-
-    'USERNAME_RESET_CONFIRM_URL': 'username/reset/confirm/{uid}/{token}',
-    'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
+    # Forgot password / username
+    'USERNAME_RESET_CONFIRM_URL': 'username-reset/confirm/{uid}/{token}',
+    'PASSWORD_RESET_CONFIRM_URL': 'password-reset/confirm/{uid}/{token}',
 }
 
 REST_FRAMEWORK = {
