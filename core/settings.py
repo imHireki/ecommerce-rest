@@ -38,7 +38,20 @@ DJOSER = {
     'USER_CREATE_PASSWORD_RETYPE': True,
     'SERIALIZERS': {
         'current_user': 'apps.account.serializers.UserProfileSerializer'
-    }
+    },
+
+    'SEND_ACTIVATION_EMAIL': True,
+    'SEND_CONFIRMATION_EMAIL': True,
+
+    'USERNAME_CHANGED_EMAIL_CONFIRMATION': True,
+    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
+
+    # __Email URLs for redirect to front-end__
+    # set is_active to True and allow login
+    'ACTIVATION_URL': 'activate/{uid}/{token}',
+
+    'USERNAME_RESET_CONFIRM_URL': 'username/reset/confirm/{uid}/{token}',
+    'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
 }
 
 REST_FRAMEWORK = {
@@ -46,6 +59,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ]
 }
+
+# http://127.0.0.1:8000/activate/MQ/asvste-86b748f97c9f3efee64ae62bfacbd565
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -119,3 +134,15 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = 'smtp.gmail.com'
+
+EMAIL_USE_TLS = True
+
+EMAIL_PORT = 587
+
+EMAIL_HOST_USER = get_secret('EMAIL_HOST_USER')
+
+EMAIL_HOST_PASSWORD = get_secret('EMAIL_HOST_PASSWORD')
