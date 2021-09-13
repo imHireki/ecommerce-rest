@@ -36,8 +36,13 @@ INSTALLED_APPS = [
 
 DJOSER = {
     'USER_CREATE_PASSWORD_RETYPE': True,
+
     'SERIALIZERS': {
-        'current_user': 'apps.account.serializers.UserProfileSerializer'
+        'current_user': 'apps.account.serializers.UserProfileSerializer',
+    },
+
+    'EMAIL': {
+        'activation': 'apps.account.email.ActivationEmail',
     },
 
     # Enable the email activation/confirmation
@@ -116,7 +121,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pt-br'
 
 TIME_ZONE = 'UTC'
 
