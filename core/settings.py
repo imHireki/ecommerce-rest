@@ -28,43 +28,12 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'djoser',
+    'social_django',
     
     # Apps
     'apps.product',
     'apps.account',
 ]
-
-DJOSER = {
-    'USER_CREATE_PASSWORD_RETYPE': True,
-
-    'SERIALIZERS': {
-        'current_user': 'apps.account.serializers.UserProfileSerializer',
-    },
-
-    'EMAIL': {
-        'activation': 'apps.account.email.ActivationEmail',
-    },
-
-    # Enable the email activation/confirmation
-    'SEND_ACTIVATION_EMAIL': True,
-    'SEND_CONFIRMATION_EMAIL': True,
-
-    # # # Email URLs that should redirect to front-end # # #
-
-    # 4 Register. Set is_active to True and allow login
-    'ACTIVATION_URL': 'activate/{uid}/{token}',
-    # Forgot password / username
-    'USERNAME_RESET_CONFIRM_URL': 'username-reset/confirm/{uid}/{token}',
-    'PASSWORD_RESET_CONFIRM_URL': 'password-reset/confirm/{uid}/{token}',
-}
-
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-    ]
-}
-
-# http://127.0.0.1:8000/activate/MQ/asvste-86b748f97c9f3efee64ae62bfacbd565
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -74,6 +43,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # Django Social's middleware
+    'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -89,6 +61,10 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                # Django Social's context processors
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -121,32 +97,75 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ]
+}
+
+DJOSER = {
+    'USER_CREATE_PASSWORD_RETYPE': True,
+
+    'SERIALIZERS': {
+        'current_user': 'apps.account.serializers.UserProfileSerializer',
+    },
+
+    'EMAIL': {
+        'activation': 'apps.account.email.ActivationEmail',
+    },
+
+    # Enable the email activation/confirmation
+    'SEND_ACTIVATION_EMAIL': True,
+    'SEND_CONFIRMATION_EMAIL': True,
+
+    # # # Email URLs that should redirect to front-end # # #
+
+    # SignUp | Set is_active to True and allow login
+    'ACTIVATION_URL': 'activate/{uid}/{token}',
+    # Forgot password and username
+    'USERNAME_RESET_CONFIRM_URL': 'username-reset/confirm/{uid}/{token}',
+    'PASSWORD_RESET_CONFIRM_URL': 'password-reset/confirm/{uid}/{token}',
+
+    # Djoser Social Authentication Settings
+    'SOCIAL_AUTH_TOKEN_STRATEGY': 'djoser.social.token.jwt.TokenStrategy',
+    'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': ['http://localhost:8000', ],
+}
+
+# Backends Settings | Django Social Authentication
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+# Google OAUTH2 | Djago Social Authentication
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '344328653573-lp5e2vdkfmljgsb09m64bpft83nid14c.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'sFaTLVOxJ974nKfzEX0Wk7x0'
+SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ['first_name', 'last_name']
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
+    'openid',
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/userinfo.profile',
+]
+
+# Email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = get_secret('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = get_secret('EMAIL_HOST_PASSWORD')
+
+# Language and TZ
 LANGUAGE_CODE = 'pt-br'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
+# Media and Static
 STATIC_URL = '/static/'
-
 MEDIA_URL = '/media/'
-
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
-EMAIL_HOST = 'smtp.gmail.com'
-
-EMAIL_USE_TLS = True
-
-EMAIL_PORT = 587
-
-EMAIL_HOST_USER = get_secret('EMAIL_HOST_USER')
-
-EMAIL_HOST_PASSWORD = get_secret('EMAIL_HOST_PASSWORD')
