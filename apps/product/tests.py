@@ -1,3 +1,6 @@
+"""
+App product tests
+"""
 from django.test import TestCase
 import os
 
