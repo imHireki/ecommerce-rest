@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'djoser',
     'social_django',
+    'debug_toolbar',
     
     # Apps
     'apps.product',
@@ -36,6 +37,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    # Debug toolbar middleware
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -46,6 +50,10 @@ MIDDLEWARE = [
 
     # Django Social's middleware
     'social_django.middleware.SocialAuthExceptionMiddleware',
+]
+
+INTERNAL_IPS = [
+    '127.0.0.1',
 ]
 
 ROOT_URLCONF = 'core.urls'

@@ -5,8 +5,11 @@ from django.conf.urls.static import static
 from django.urls import path, include
 from django.conf import settings
 
+import debug_toolbar
+
 
 urlpatterns = [
+    path('__debug__/', include(debug_toolbar.urls)),
     path('api/v1/', include('rest_framework.urls')),
     path('api/v1/product/', include('apps.product.urls')),
     path('api/v1/account/', include('apps.account.urls')),
