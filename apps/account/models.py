@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from utils.account import get_state_choices
+from .utils import get_state_choices
 
 
 class User(AbstractUser):

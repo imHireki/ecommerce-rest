@@ -4,7 +4,7 @@ App product tests
 from django.test import TestCase
 import os
 
-from utils.product import get_img_file, create_img
+from .utils import get_img_file, create_img
 from apps.product.models import Product
 
 

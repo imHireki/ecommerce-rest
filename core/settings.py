@@ -1,7 +1,7 @@
 """
 Django settings for core project.
 """
-from utils.core import get_secret
+from .utils import get_secret
 from pathlib import Path
 import os
 

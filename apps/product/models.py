@@ -3,7 +3,7 @@ Product and ProductImage models
 """
 from django.db import models
 
-from utils.product import auto_slug, resize
+from .utils import auto_slug, resize
 
 
 POS_RESIZE_STR = '_Cmprssd'
