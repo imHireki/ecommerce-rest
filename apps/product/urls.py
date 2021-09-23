@@ -2,9 +2,11 @@
 Urls for the app product
 """
 from django.urls import path
-from .views import Products
+
+from .views import ProductCreateView, ProductListView
 
 
 urlpatterns = [
-    path('products/', Products.as_view()),
+    path('', ProductCreateView.as_view()),
+    path('products/', ProductListView.as_view()),
 ]

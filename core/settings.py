@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'djoser',
     'social_django',
     'debug_toolbar',
+    'django_filters',
     
     # Apps
     'apps.product',
@@ -109,7 +110,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ]
+    ],
 }
 
 DJOSER = {

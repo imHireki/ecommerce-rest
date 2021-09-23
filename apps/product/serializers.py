@@ -18,12 +18,11 @@ class ProductSerializer(ModelSerializer):
     """ Serializer for the Product Model """
 
     # Images require related_name='images' on FK
-    images = ProductImageSerializer(many=True)
+    images = ProductImageSerializer(many=True, required=False)
     class Meta:
         model = Product
         fields = (
-            'id', 'name', 'description',
-            'slug', 'price', 'price_off',
-            'inventory', 'thumbnail', 'images',
+            'id', 'name', 'description', 'slug',
+            'price', 'price_off', 'inventory',
+            'thumbnail', 'images',
         )
-        

@@ -18,7 +18,7 @@ class Product(models.Model):
     description = models.TextField(blank=True, null=True)
     slug = models.SlugField(unique=True, blank=True, null=True)
     price = models.FloatField()
-    price_off = models.FloatField(default=0)
+    price_off = models.FloatField(blank=True, null=True)
     inventory = models.PositiveIntegerField(default=0)
     thumbnail = models.ImageField(
         upload_to='uploads/thumbnails/%Y/%m/',
@@ -32,18 +32,25 @@ class Product(models.Model):
         return self.name
         
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        needs_resave = False
 
+        # Set the price_off the same value as the price
+        if not self.price_off:
+            self.price_off = self.price
+    
+        super().save(*args, **kwargs)
+        need_resave = False
+
+        # Resize thumbnail
         if self.thumbnail and POS_RESIZE_STR not in self.thumbnail.name:
             self.thumbnail = resize(self.thumbnail, (256, 256))
-            needs_resave = True
+            need_resave = True
 
+        # Make an URL slug
         if not self.slug:
             self.slug = auto_slug(self.pk, self.name)
-            needs_resave = True
-        
-        if needs_resave:
+            need_resave = True
+
+        if need_resave:
             self.save()
 
 
