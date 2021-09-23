@@ -22,7 +22,9 @@ class ProductCreateView(APIView):
 
 class ProductListView(generics.ListAPIView):
     # List content
-    queryset = Product.objects.all().prefetch_related('images')
+    queryset = Product.objects.order_by(
+        '-inventory'
+    ).prefetch_related('images')
     serializer_class = ProductSerializer
     
     # List filters
