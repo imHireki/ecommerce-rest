@@ -21,8 +21,20 @@ class ProductCreateView(APIView):
 
 
 class ProductListView(generics.ListAPIView):
+    # List content
     queryset = Product.objects.all().prefetch_related('images')
     serializer_class = ProductSerializer
-    search_fields = ('name', 'description',)
+    
+    # List filters
+    filter_backends = (
+        # drf filters
+        filters.SearchFilter,
+        filters.OrderingFilter,
+
+        # django-filter lib
+        DjangoFilterBackend,
+
+    )
     filterset_class = PriceFilter
-    filter_backends = (filters.SearchFilter,DjangoFilterBackend,)
+    search_fields = ['name', 'description',]
+    ordering_fields = ['name', 'description', 'price_off']
