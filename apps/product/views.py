@@ -4,9 +4,10 @@ Products view for the ProductSerializer
 from django_filters.rest_framework.backends import DjangoFilterBackend
 
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework import generics, filters
+from rest_framework.views import APIView
 
+from .paginators import ProductListPagination
 from .serializers import ProductSerializer
 from .filters import  PriceFilter
 from .models import Product
@@ -19,8 +20,8 @@ class ProductCreateView(APIView):
         serializer.save()
         return Response(serializer.data)
 
-
-class ProductListView(generics.ListAPIView):
+    
+class ProductListView(generics.ListCreateAPIView):
     # List content
     queryset = Product.objects.order_by(
         '-inventory'
@@ -35,8 +36,9 @@ class ProductListView(generics.ListAPIView):
 
         # django-filter lib
         DjangoFilterBackend,
-
     )
     filterset_class = PriceFilter
     search_fields = ['name', 'description',]
     ordering_fields = ['name', 'description', 'price_off']
+
+    pagination_class = ProductListPagination
