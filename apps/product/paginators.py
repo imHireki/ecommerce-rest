@@ -1,5 +1,9 @@
+"""
+Paginators for the product app
+"""
 from rest_framework.pagination import PageNumberPagination
 
 
 class ProductListPagination(PageNumberPagination):
-    page_size = 3
+    """ A PageNumberPagination that displays 6 products per page """
+    page_size = 6

@@ -22,13 +22,13 @@ class ProductCreateView(APIView):
 
     
 class ProductListView(generics.ListCreateAPIView):
-    # List content
+    # Content
     queryset = Product.objects.order_by(
         '-inventory'
     ).prefetch_related('images')
     serializer_class = ProductSerializer
     
-    # List filters
+    # Filters
     filter_backends = (
         # drf filters
         filters.SearchFilter,
@@ -41,4 +41,5 @@ class ProductListView(generics.ListCreateAPIView):
     search_fields = ['name', 'description',]
     ordering_fields = ['name', 'description', 'price_off']
 
+    # Pagination
     pagination_class = ProductListPagination
