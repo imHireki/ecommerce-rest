@@ -6,9 +6,11 @@ from django_filters.rest_framework.backends import DjangoFilterBackend
 from rest_framework.response import Response
 from rest_framework import generics, filters
 from rest_framework.views import APIView
+from rest_framework import permissions
 
 from .paginators import ProductListPagination
 from .serializers import ProductSerializer
+from .permissions import ReadOnly
 from .filters import  PriceFilter
 from .models import Product
 
@@ -27,6 +29,11 @@ class ProductListView(generics.ListCreateAPIView):
         '-inventory'
     ).prefetch_related('images')
     serializer_class = ProductSerializer
+
+    # Permissions
+    permission_classes = [
+        permissions.IsAdminUser | ReadOnly # Is admin or Read Only
+    ]
     
     # Filters
     filter_backends = (
