@@ -3,9 +3,7 @@ Products view for the ProductSerializer
 """
 from django_filters.rest_framework.backends import DjangoFilterBackend
 
-from rest_framework.response import Response
 from rest_framework import generics, filters
-from rest_framework.views import APIView
 from rest_framework import permissions
 
 from .paginators import ProductListPagination
@@ -15,15 +13,17 @@ from .filters import  PriceFilter
 from .models import Product
 
 
-class ProductCreateView(APIView):
-    def post(self, *args, **kwargs):
-        serializer = ProductSerializer(data=self.request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
-
-    
 class ProductListView(generics.ListCreateAPIView):
+    """ 
+    View for the product list
+
+    Return a response a list of product's objects
+        - ordering = descending `inventory`
+        - permissions = is admin or read only
+        - filters = search, ordering and price range
+        - pagination = Page number with 6 products per page
+    """
+    
     # Content
     queryset = Product.objects.order_by(
         '-inventory'
